@@ -24,7 +24,7 @@ const generateReferenceId = () => {
 exports.hlrCheck = async (req, res, next) => {
   const { number, type } = req.body;
   try {
-    const apiUrl = "https://api.paysprint.in/service-api/api/v1/service/recharge/hlrapi/hlrcheck";
+    const apiUrl = "https://api.paysprint.in/api/v1/service/recharge/hlrapi/hlrcheck";
     const requestData = {
       number,
       type
@@ -49,7 +49,7 @@ exports.hlrCheck = async (req, res, next) => {
 exports.browsePlan = async (req, res, next) => {
   const { circle, op } = req.query;
   try {
-    const apiUrl = "https://api.paysprint.in/service-api/api/v1/service/recharge/hlrapi/browseplan";
+    const apiUrl = "/recharge/hlrapi/browseplan";
     const requestData = {
       circle,
       op
@@ -73,7 +73,7 @@ exports.browsePlan = async (req, res, next) => {
 exports.dthPlan = async (req, res, next) => {
   const { canumber, op } = req.body;
   try {
-    const apiUrl = "https://api.paysprint.in/service-api/api/v1/service/recharge/hlrapi/dthinfo";
+    const apiUrl = "https://api.paysprint.in/api/v1/service/recharge/hlrapi/dthinfo";
     const requestData = {
       canumber,
       op
@@ -238,7 +238,7 @@ exports.doRecharge = async (req, res, next) => {
     console.log("📝 Debit transaction created:", debitTxn[0]._id);
 
     // ✅ Get operator
-    const operatorRes = await axios.post("https://api.paysprint.in/service-api/api/v1/service/recharge/recharge/getoperator", {}, { headers });
+    const operatorRes = await axios.post("https://api.paysprint.in/api/v1/service/recharge/recharge/getoperator", {}, { headers });
     logApiCall({ url: "getoperator", requestData: {}, responseData: operatorRes.data });
     console.log("🔎 Operator response:", operatorRes.data);
 
@@ -266,7 +266,7 @@ exports.doRecharge = async (req, res, next) => {
     console.log("🗂️ Recharge record created:", rechargeRecord[0]._id);
 
     // ✅ Do recharge
-    const rechargeRes = await axios.post("https://api.paysprint.in/service-api/api/v1/service/recharge/recharge/dorecharge", {
+    const rechargeRes = await axios.post("https://api.paysprint.in/api/v1/service/recharge/recharge/dorecharge", {
       operator: operatorId, canumber, amount, referenceid
     }, { headers });
 
@@ -362,7 +362,7 @@ exports.checkRechargeStatus = async (req, res, next) => {
 
   try {
     const response = await axios.post(
-      "https://api.paysprint.in/service-api/api/v1/service/recharge/recharge/status",
+      "https://api.paysprint.in/api/v1/service/recharge/recharge/status",
       {
         referenceid: transactionId,
       },
@@ -474,7 +474,7 @@ exports.fetchBillDetails = async (req, res) => {
 
   try {
     const response = await axios.post(
-      "https://api.paysprint.in/service-api/api/v1/service/bill-payment/bill/fetchbill",
+      "https://api.paysprint.in/api/v1/service/bill-payment/bill/fetchbill",
       { operator, canumber, mode, ...extraFields },
       { headers }
     );
@@ -535,7 +535,7 @@ exports.payBill = async (req, res, next) => {
     }], { session });
 
     const response = await axios.post(
-      "https://api.paysprint.in/service-api/api/v1/service/bill-payment/bill/paybill",
+      "https://api.paysprint.in/api/v1/service/bill-payment/bill/paybill",
       { operator, canumber, amount, referenceid, latitude, longitude, mode, bill_fetch },
       { headers }
     );
@@ -618,7 +618,7 @@ exports.checkBillPaymentStatus = async (req, res, next) => {
 
   try {
     const response = await axios.post(
-      "https://api.paysprint.in/service-api/api/v1/service/bill-payment/bill/status",
+      "https://api.paysprint.in/api/v1/service/bill-payment/bill/status",
       { referenceid },
       { headers }
     );
