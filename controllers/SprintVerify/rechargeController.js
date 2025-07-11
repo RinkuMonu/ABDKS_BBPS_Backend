@@ -11,7 +11,7 @@ const { log } = require("winston");
 
 
 const headers = {
-  'Token':"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0aW1lc3RhbXAiOjE3NTIyMzE0OTIsInBhcnRuZXJJZCI6IlBTMDA2MjI2IiwicmVxaWQiOiIxNzUyMjMxNDkyIiwiaWF0IjoxNzUyMjMxNDkyfQ.MEo3fz6xdOKmYTkgapBLHUGB4ABHThuSC30XtJRXEbo",
+  'Token': generatePaysprintJWT(),
   'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
 }
 
