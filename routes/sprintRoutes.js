@@ -48,9 +48,9 @@ router.get("/recharge/status/:transactionId", authenticateToken, celebrate({
 }), checkRechargeStatus)
 
 
-router.get('/bill/operators',  getBillOperatorList);
+router.get('/bill/operators',getBillOperatorList);
 
-router.post('/bill/details',  fetchBillDetails);
+router.post('/bill/details',fetchBillDetails);
 
 router.post('/bill/pay', authenticateToken, payBill);
 

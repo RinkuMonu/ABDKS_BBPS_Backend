@@ -7,6 +7,7 @@ const userModel = require("../../models/userModel.js");
 const mongoose = require("mongoose");
 const { getApplicableServiceCharge, applyServiceCharges, logApiCall } = require("../../utils/chargeCaluate.js");
 const { distributeCommission } = require("../../utils/distributerCommission.js");
+const { log } = require("winston");
 
 
 const headers = {
@@ -23,7 +24,7 @@ const generateReferenceId = () => {
 exports.hlrCheck = async (req, res, next) => {
   const { number, type } = req.body;
   try {
-    const apiUrl = "https://sit.paysprint.in/service-api/api/v1/service/recharge/hlrapi/hlrcheck";
+    const apiUrl = "https://api.paysprint.in/service-api/api/v1/service/recharge/hlrapi/hlrcheck";
     const requestData = {
       number,
       type
@@ -48,7 +49,7 @@ exports.hlrCheck = async (req, res, next) => {
 exports.browsePlan = async (req, res, next) => {
   const { circle, op } = req.query;
   try {
-    const apiUrl = "https://sit.paysprint.in/service-api/api/v1/service/recharge/hlrapi/browseplan";
+    const apiUrl = "https://api.paysprint.in/service-api/api/v1/service/recharge/hlrapi/browseplan";
     const requestData = {
       circle,
       op
@@ -72,7 +73,7 @@ exports.browsePlan = async (req, res, next) => {
 exports.dthPlan = async (req, res, next) => {
   const { canumber, op } = req.body;
   try {
-    const apiUrl = "https://sit.paysprint.in/service-api/api/v1/service/recharge/hlrapi/dthinfo";
+    const apiUrl = "https://api.paysprint.in/service-api/api/v1/service/recharge/hlrapi/dthinfo";
     const requestData = {
       canumber,
       op
@@ -92,22 +93,41 @@ exports.dthPlan = async (req, res, next) => {
   }
 };
 
+
+
+
+
+
 exports.getOperatorList = async (req, res, next) => {
+  console.log("⚡ Fetching operator list...");
+
   try {
-    const response = await axios.post(
-      "https://sit.paysprint.in/service-api/api/v1/service/recharge/recharge/getoperator",
-      {},
-      { headers }
-    );
+    // ✅ Token generate karo aur log karo
+    const token = generatePaysprintJWT();
+    console.log("🟢 Generated Token:", token);
 
+    const headers = {
+      'Token': token,
+      'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+      'Content-Type': 'application/json',
+    };
+
+    console.log("🟢 Headers being sent:", headers);
+
+    const apiURL = "https://api.paysprint.in/api/v1/service/recharge/recharge/getoperator";
+    console.log("🟢 API URL:", apiURL);
+
+    // ✅ Request send karo
+    const response = await axios.post(apiURL, {}, { headers });
+
+    console.log("✅ Raw API Response:", JSON.stringify(response.data, null, 2));
+
+    // ✅ Log API call (agar function bana hua hai to)
     logApiCall({
-      url: "https://sit.paysprint.in/service-api/api/v1/service/recharge/recharge/getoperator",
-
-
+      url: apiURL,
       requestData: req.body,
       responseData: response.data
     });
-
 
     if (response.data?.responsecode === 1) {
       req.operators = response.data.data;
@@ -124,10 +144,23 @@ exports.getOperatorList = async (req, res, next) => {
         data: []
       });
     }
+
   } catch (error) {
+    // ✅ Error details console me print karo
+    console.error("❌ Error Occurred:");
+    if (error.response) {
+      console.error("Status Code:", error.response.status);
+      console.error("Headers:", error.response.headers);
+      console.error("Response Data:", JSON.stringify(error.response.data, null, 2));
+    } else if (error.request) {
+      console.error("No Response Received:", error.request);
+    } else {
+      console.error("Error Message:", error.message);
+    }
     next(error);
   }
 };
+
 
 
 
@@ -204,7 +237,7 @@ exports.doRecharge = async (req, res, next) => {
     console.log("📝 Debit transaction created:", debitTxn[0]._id);
 
     // ✅ Get operator
-    const operatorRes = await axios.post("https://sit.paysprint.in/service-api/api/v1/service/recharge/recharge/getoperator", {}, { headers });
+    const operatorRes = await axios.post("https://api.paysprint.in/service-api/api/v1/service/recharge/recharge/getoperator", {}, { headers });
     logApiCall({ url: "getoperator", requestData: {}, responseData: operatorRes.data });
     console.log("🔎 Operator response:", operatorRes.data);
 
@@ -232,7 +265,7 @@ exports.doRecharge = async (req, res, next) => {
     console.log("🗂️ Recharge record created:", rechargeRecord[0]._id);
 
     // ✅ Do recharge
-    const rechargeRes = await axios.post("https://sit.paysprint.in/service-api/api/v1/service/recharge/recharge/dorecharge", {
+    const rechargeRes = await axios.post("https://api.paysprint.in/service-api/api/v1/service/recharge/recharge/dorecharge", {
       operator: operatorId, canumber, amount, referenceid
     }, { headers });
 
@@ -328,7 +361,7 @@ exports.checkRechargeStatus = async (req, res, next) => {
 
   try {
     const response = await axios.post(
-      "https://sit.paysprint.in/service-api/api/v1/service/recharge/recharge/status",
+      "https://api.paysprint.in/service-api/api/v1/service/recharge/recharge/status",
       {
         referenceid: transactionId,
       },
@@ -336,7 +369,7 @@ exports.checkRechargeStatus = async (req, res, next) => {
     );
 
     logApiCall({
-      url: "https://sit.paysprint.in/service-api/api/v1/service/recharge/recharge/status",
+      url: "https://api.paysprint.in/service-api/api/v1/service/recharge/recharge/status",
 
       requestData: req.params,
       responseData: response.data
@@ -380,12 +413,12 @@ exports.getBillOperatorList = async (req, res) => {
   const { mode = "online" } = req.body;
   try {
     const response = await axios.post(
-      "https://sit.paysprint.in/service-api/api/v1/service/bill-payment/bill/getoperator",
+      "https://api.paysprint.in/service-api/api/v1/service/bill-payment/bill/getoperator",
       { mode },
       { headers }
     );
     logApiCall({
-      url: "https://sit.paysprint.in/service-api/api/v1/service/bill-payment/bill/getoperator",
+      url: "https://api.paysprint.in/service-api/api/v1/service/bill-payment/bill/getoperator",
 
       requestData: req.body,
       responseData: response.data
@@ -417,13 +450,13 @@ exports.fetchBillDetails = async (req, res) => {
 
   try {
     const response = await axios.post(
-      "https://sit.paysprint.in/service-api/api/v1/service/bill-payment/bill/fetchbill",
+      "https://api.paysprint.in/service-api/api/v1/service/bill-payment/bill/fetchbill",
       { operator, canumber, mode, ...extraFields },
       { headers }
     );
 
     logApiCall({
-      url: "https://sit.paysprint.in/service-api/api/v1/service/bill-payment/bill/fetchbill",
+      url: "https://api.paysprint.in/service-api/api/v1/service/bill-payment/bill/fetchbill",
 
       requestData: req.body,
       responseData: response.data
@@ -478,13 +511,13 @@ exports.payBill = async (req, res, next) => {
     }], { session });
 
     const response = await axios.post(
-      "https://sit.paysprint.in/service-api/api/v1/service/bill-payment/bill/paybill",
+      "https://api.paysprint.in/service-api/api/v1/service/bill-payment/bill/paybill",
       { operator, canumber, amount, referenceid, latitude, longitude, mode, bill_fetch },
       { headers }
     );
 
     logApiCall({
-      url: "https://sit.paysprint.in/service-api/api/v1/service/bill-payment/bill/paybill",
+      url: "https://api.paysprint.in/service-api/api/v1/service/bill-payment/bill/paybill",
 
       requestData: req.body,
       responseData: response.data
@@ -561,13 +594,13 @@ exports.checkBillPaymentStatus = async (req, res, next) => {
 
   try {
     const response = await axios.post(
-      "https://sit.paysprint.in/service-api/api/v1/service/bill-payment/bill/status",
+      "https://api.paysprint.in/service-api/api/v1/service/bill-payment/bill/status",
       { referenceid },
       { headers }
     );
 
     logApiCall({
-      url: "https://sit.paysprint.in/service-api/api/v1/service/bill-payment/bill/status",
+      url: "https://api.paysprint.in/service-api/api/v1/service/bill-payment/bill/status",
 
       requestData: req.body,
       responseData: response.data

@@ -1,22 +1,21 @@
 const jwt = require('jsonwebtoken');
 
 function generatePaysprintJWT() {
-    const timestamp = Math.floor(Date.now() / 1000);
-    const requestId = Math.floor(Math.random() * 1000000000);
-    const payload = {
-        timestamp: timestamp,
-        partnerId: 'PS0016226',
-        reqid: requestId.toString()
-    };
-    const token = jwt.sign(payload, 'UFMwMDYyMjY0ZmJmYjIzYmNiMTliMDJjMmJjZWIxYjA5ZGUzNmJjYjE3NTEwMjI2Mzg=', {
-        algorithm: 'HS256',
-        header: {
-            typ: 'JWT',
-            alg: 'HS256'
-        }
-    });
+  const payload = {
+    timestamp: Math.floor(Date.now() / 1000),
+    partnerId: 'PS006226' // <-- Yeh apna actual partnerId daalo exactly Paysprint wale ka
+  };
 
-    return token;
+  const secret = 'UFMwMDYyMjY0ZmJmYjIzYmNiMTliMDJjMmJjZWIxYjA5ZGUzNmJjYjE3NTEwMjI2Mzg='; // <-- Apni actual secret key daalo
+
+  const token = jwt.sign(payload, secret, {
+    algorithm: 'HS256',
+    header: {
+      typ: 'JWT'
+    }
+  });
+
+  return token;
 }
 
-module.exports = generatePaysprintJWT; 
+module.exports = generatePaysprintJWT;
