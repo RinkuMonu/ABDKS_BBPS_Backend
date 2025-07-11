@@ -118,7 +118,7 @@ exports.getOperatorList = async (req, res, next) => {
     console.log("🟢 API URL:", apiURL);
 
     // ✅ Request send karo
-    const response = await axios.post(apiURL, {}, { headers });
+    const response = await axios.post(apiURL, {"mode":"offline"}, { headers });
 
     console.log("✅ Raw API Response:", JSON.stringify(response.data, null, 2));
 
