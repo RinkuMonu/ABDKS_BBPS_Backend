@@ -9,9 +9,9 @@ const { getApplicableServiceCharge, applyServiceCharges, logApiCall } = require(
 const { distributeCommission } = require("../../utils/distributerCommission.js");
 const { log } = require("winston");
 
-
+const token = generatePaysprintJWT();
 const headers = {
-  'Token': generatePaysprintJWT(),
+  'Token': token,
   'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
 }
 
