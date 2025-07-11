@@ -99,6 +99,7 @@ exports.dthPlan = async (req, res, next) => {
 
 
 exports.getOperatorList = async (req, res, next) => {
+  const { mode = "offline" } = req.body;
   console.log("⚡ Fetching operator list...");
 
   try {
@@ -118,7 +119,7 @@ exports.getOperatorList = async (req, res, next) => {
     console.log("🟢 API URL:", apiURL);
 
     // ✅ Request send karo
-    const response = await axios.post(apiURL, {"mode":"offline"}, { headers });
+    const response = await axios.post(apiURL, {mode}, { headers });
 
     console.log("✅ Raw API Response:", JSON.stringify(response.data, null, 2));
 
@@ -410,29 +411,52 @@ exports.checkRechargeStatus = async (req, res, next) => {
 };
 
 exports.getBillOperatorList = async (req, res) => {
-  const { mode = "online" } = req.body;
-  try {
-    const response = await axios.post(
-      "https://api.paysprint.in/service-api/api/v1/service/bill-payment/bill/getoperator",
-      { mode },
-      { headers }
-    );
-    logApiCall({
-      url: "https://api.paysprint.in/service-api/api/v1/service/bill-payment/bill/getoperator",
+  const { mode = "offline" } = req.body;
+  const apiURL = "https://api.paysprint.in/api/v1/service/bill-payment/bill/getoperator";
 
+  console.log("⚡ Fetching Bill Operator List...");
+  console.log("🟢 API URL:", apiURL);
+  console.log("🟢 Request body:", { mode });
+  console.log("🟢 Headers being sent:", headers);
+
+  try {
+    const response = await axios.post(apiURL, { mode }, { headers });
+
+    console.log("✅ Raw API Response:", JSON.stringify(response.data, null, 2));
+
+    // ✅ Log API call (agar custom logApiCall function bana hua hai)
+    logApiCall({
+      url: apiURL,
       requestData: req.body,
       responseData: response.data
     });
 
     const data = response.data;
+
     if (data.response_code === 1) {
+      console.log("✅ Operators fetched successfully (response_code 1)");
       return res.status(200).json(data);
     }
+
     if (data.response_code === 2) {
+      console.log("ℹ️ No operators found (response_code 2)");
       return res.status(200).json(data);
     }
+
+    console.log("⚠️ Unexpected response_code:", data.response_code);
     return res.status(400).json(data);
   } catch (error) {
+    console.error("❌ Error occurred while fetching bill operator list:");
+    if (error.response) {
+      console.error("Status Code:", error.response.status);
+      console.error("Response Data:", JSON.stringify(error.response.data, null, 2));
+      console.error("Headers:", error.response.headers);
+    } else if (error.request) {
+      console.error("No response received:", error.request);
+    } else {
+      console.error("Error Message:", error.message);
+    }
+
     return res.status(500).json({
       status: "error",
       message: error.response?.data?.message || "Failed to fetch bill operator list",
