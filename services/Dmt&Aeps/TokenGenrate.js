@@ -1,19 +1,19 @@
 const jwt = require('jsonwebtoken');
 
-
-
 function generatePaysprintJWT() {
-      const ts = Math.floor(Date.now() / 1000);
+  // Millisecond timestamp (more unique)
+  const ts = Math.floor(Date.now() / 1000);
 
-  const reqid =  ts.toString() + Math.floor(Math.random() * 1000).toString();
+  // Create large random part to ensure unique reqid
+  const reqid = Date.now().toString() + Math.floor(Math.random() * 1000000).toString();
 
   const payload = {
     timestamp: ts,
-    partnerId: 'PS006226', // ✅ Your exact live PartnerId here
-    reqid: reqid   // ✅ Unique request ID (can use timestamp as string)
+    partnerId: 'PS006226', // ✅ Apna exact live partnerId
+    reqid: reqid           // ✅ Now truly unique
   };
 
-const secret = 'UFMwMDYyMjY0ZmJmYjIzYmNiMTliMDJjMmJjZWIxYjA5ZGUzNmJjYjE3NTEwMjI2Mzg=';  // ✅ Your exact live secret here
+  const secret = 'UFMwMDYyMjY0ZmJmYjIzYmNiMTliMDJjMmJjZWIxYjA5ZGUzNmJjYjE3NTEwMjI2Mzg='; // ✅ Apna exact live secret
 
   const token = jwt.sign(payload, secret, {
     algorithm: "HS256",
@@ -21,6 +21,9 @@ const secret = 'UFMwMDYyMjY0ZmJmYjIzYmNiMTliMDJjMmJjZWIxYjA5ZGUzNmJjYjE3NTEwMjI2
       typ: "JWT"
     }
   });
+
+  console.log("✅ Generated JWT Token:", token);
+  console.log("✅ Payload:", payload);
 
   return token;
 }
