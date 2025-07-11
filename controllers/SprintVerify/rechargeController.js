@@ -11,7 +11,7 @@ const { distributeCommission } = require("../../utils/distributerCommission.js")
 
 const headers = {
   'Token': generatePaysprintJWT(),
-  'Authorisedkey': 'MGY1MTVmNWM3Yjk5MTdlYTcyYjk5NmUzZjYwZDVjNWE=',
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
 }
 
 const generateReferenceId = () => {
