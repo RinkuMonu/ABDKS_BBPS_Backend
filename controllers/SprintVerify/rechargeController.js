@@ -445,6 +445,11 @@ const headers = {
 exports.getBillOperatorList = async (req, res) => {
   const { mode = "offline" } = req.body;
   const apiURL = "https://api.paysprint.in/api/v1/service/bill-payment/bill/getoperator";
+    const token = generatePaysprintJWT();
+const headers = {
+  'Token': token,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+}
 
   console.log("⚡ Fetching Bill Operator List...");
   console.log("🟢 API URL:", apiURL);
