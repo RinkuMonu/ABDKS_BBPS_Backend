@@ -41,7 +41,7 @@ router.post('/recharge/dorecharge', celebrate({
         mpin: Joi.string().required(),
         // userId: Joi.string().required(),
     })
-}),  doRecharge);
+}),authenticateToken,  doRecharge);
 
 router.get("/recharge/status/:transactionId", authenticateToken, celebrate({
     [Segments.PARAMS]: Joi.object().keys({
