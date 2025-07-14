@@ -7,6 +7,7 @@ const { getOperatorList, doRecharge, hlrCheck, browsePlan, checkRechargeStatus, 
 const serviceChargeMiddleware = require('../middleware/serviceCharge.js');
 const busController = require("../controllers/SprintVerify/busBookingController.js");
 
+
 const refidValidator = celebrate({
     [Segments.BODY]: Joi.object({
         refid: Joi.string().required(),
@@ -38,8 +39,9 @@ router.post('/recharge/dorecharge', celebrate({
         amount: Joi.number().required(),
         category: Joi.string().required(),
         mpin: Joi.string().required(),
+        userId: Joi.string().required(),
     })
-}), authenticateToken, doRecharge);
+}),  doRecharge);
 
 router.get("/recharge/status/:transactionId", authenticateToken, celebrate({
     [Segments.PARAMS]: Joi.object().keys({

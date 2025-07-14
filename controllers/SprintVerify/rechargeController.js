@@ -55,7 +55,7 @@ const headers = {
   'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
 }
   try {
-    const apiUrl = "https://api.paysprint.in/api/v1/service/recharge/hlrapi/browseplan";
+    const apiUrl = "/recharge/hlrapi/browseplan";
     const requestData = {
       circle,
       op
@@ -123,6 +123,11 @@ const headers = {
     const token = generatePaysprintJWT();
     console.log("🟢 Generated Token:", token);
 
+    const headers = {
+      'Token': token,
+      'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+      'Content-Type': 'application/json',
+    };
 
     console.log("🟢 Headers being sent:", headers);
 
@@ -253,8 +258,14 @@ const headers = {
     }], { session });
     console.log("📝 Debit transaction created:", debitTxn[0]._id);
 
+      const newtoken = generatePaysprintJWT();
+const newheader = {
+  'Token': newtoken,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+}
+
     // ✅ Get operator
-    const operatorRes = await axios.post("https://api.paysprint.in/api/v1/service/recharge/recharge/getoperator", {}, { headers });
+    const operatorRes = await axios.post("https://api.paysprint.in/api/v1/service/recharge/recharge/getoperator", {}, { headers: newheader });
     logApiCall({ url: "getoperator", requestData: {}, responseData: operatorRes.data });
     console.log("🔎 Operator response:", operatorRes.data);
 
@@ -433,11 +444,6 @@ const headers = {
 
 exports.getBillOperatorList = async (req, res) => {
   const { mode = "offline" } = req.body;
-  const token = generatePaysprintJWT();
-const headers = {
-  'Token': token,
-  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
-}
   const apiURL = "https://api.paysprint.in/api/v1/service/bill-payment/bill/getoperator";
 
   console.log("⚡ Fetching Bill Operator List...");
@@ -493,11 +499,6 @@ const headers = {
 
 exports.fetchBillDetails = async (req, res) => {
   const { operator, canumber, mode = "online", ...extraFields } = req.body;
-  const token = generatePaysprintJWT();
-const headers = {
-  'Token': token,
-  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
-}
 
   if (!operator || !canumber) {
     return res.status(400).json({ status: "fail", message: "Missing required fields: operator, canumber" });
@@ -539,11 +540,6 @@ exports.payBill = async (req, res, next) => {
   if (!operator || !canumber || !amount || !referenceid || !latitude || !longitude || !bill_fetch) {
     return res.status(400).json({ status: "fail", message: "Missing required fields" });
   }
-  const token = generatePaysprintJWT();
-const headers = {
-  'Token': token,
-  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
-}
   const userId = req.user.id;
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -647,11 +643,6 @@ const headers = {
 
 exports.checkBillPaymentStatus = async (req, res, next) => {
   const { referenceid } = req.body;
-  const token = generatePaysprintJWT();
-const headers = {
-  'Token': token,
-  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
-}
 
   if (!referenceid) {
     return res.status(400).json({ status: "fail", message: "Missing required field: referenceid" });
