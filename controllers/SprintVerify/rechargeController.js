@@ -55,7 +55,7 @@ const headers = {
   'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
 }
   try {
-    const apiUrl = "/recharge/hlrapi/browseplan";
+    const apiUrl = "https://api.paysprint.in/api/v1/service/recharge/hlrapi/browseplan";
     const requestData = {
       circle,
       op
