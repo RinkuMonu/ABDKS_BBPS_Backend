@@ -39,7 +39,7 @@ router.post('/recharge/dorecharge', celebrate({
         amount: Joi.number().required(),
         category: Joi.string().required(),
         mpin: Joi.string().required(),
-        userId: Joi.string().required(),
+        // userId: Joi.string().required(),
     })
 }),  doRecharge);
 
