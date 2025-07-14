@@ -503,7 +503,7 @@ const headers = {
 };
 
 exports.fetchBillDetails = async (req, res) => {
-  const { operator, canumber, mode = "online", ...extraFields } = req.body;
+  const { operator, canumber, mode = "offline", ...extraFields } = req.body;
 
   if (!operator || !canumber) {
     return res.status(400).json({ status: "fail", message: "Missing required fields: operator, canumber" });
@@ -545,7 +545,7 @@ const headers = {
 };
 
 exports.payBill = async (req, res, next) => {
-  const { operator, canumber, amount, referenceid, latitude, longitude, mode = "online", bill_fetch, mpin } = req.body;
+  const { operator, canumber, amount, referenceid, latitude, longitude, mode = "offline", bill_fetch, mpin } = req.body;
   if (!operator || !canumber || !amount || !referenceid || !latitude || !longitude || !bill_fetch) {
     return res.status(400).json({ status: "fail", message: "Missing required fields" });
   }
