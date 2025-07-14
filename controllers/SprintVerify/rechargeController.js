@@ -508,7 +508,11 @@ exports.fetchBillDetails = async (req, res) => {
   if (!operator || !canumber) {
     return res.status(400).json({ status: "fail", message: "Missing required fields: operator, canumber" });
   }
-
+  const token = generatePaysprintJWT();
+const headers = {
+  'Token': token,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+}
   try {
     const response = await axios.post(
       "https://api.paysprint.in/api/v1/service/bill-payment/bill/fetchbill",
@@ -652,6 +656,11 @@ exports.checkBillPaymentStatus = async (req, res, next) => {
   if (!referenceid) {
     return res.status(400).json({ status: "fail", message: "Missing required field: referenceid" });
   }
+    const token = generatePaysprintJWT();
+const headers = {
+  'Token': token,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+}
 
   try {
     const response = await axios.post(
