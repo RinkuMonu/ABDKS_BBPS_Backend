@@ -552,6 +552,10 @@ exports.payBill = async (req, res, next) => {
   const userId = req.user.id;
   const session = await mongoose.startSession();
   session.startTransaction();
+  const headers = {
+  'Token': token,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+}
   try {
 
     let commissions = await getApplicableServiceCharge(userId, "Bill Payment")
