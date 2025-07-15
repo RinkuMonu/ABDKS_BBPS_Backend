@@ -38,53 +38,79 @@ const headers = {
         return next(error)
     }
 };
-
 exports.remitterEkyc = async (req, res, next) => {
-    const token = generatePaysprintJWT();
-const headers = {
-  'Token': token,
-  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
-}
-    try {
-        const {
-            mobile,
-            lat,
-            long,
-            aadhaar_number,
-            piddata,
-            accessmode = 'WEB',
-            is_iris = 2
-        } = req.body;
+  const token = generatePaysprintJWT();
+  const headers = {
+    'Token': token,
+    'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ='
+  };
 
-        const key = crypto.randomBytes(16);
-        const iv = crypto.randomBytes(16);
-        const encryptedData = encryptPidData(`${piddata}`, key, iv);
+  try {
+    const {
+      mobile,
+      lat,
+      long,
+      aadhaar_number,
+      piddata,
+      accessmode = 'WEB',
+      is_iris = 2
+    } = req.body;
 
-        const response = await axios.post(
-            'https://api.paysprint.in/api/v1/service/dmt/kyc/remitter/queryremitter/kyc',
-            {
-                mobile: Number(mobile),
-                lat,
-                long,
-                aadhaar_number,
-                data: encryptedData,
-                accessmode,
-                is_iris,
-                wadh: "18f4CEiXeXcfGXvgWA/blxD+w2pw7hfQPY45JMytkPw="
-            },
-            { headers }
-        );
-        logApiCall({
+    console.log("✅ [remitterEkyc] Request Body");
+    console.log("👉 Mobile:", mobile);
+    console.log("👉 Lat:", lat);
+    console.log("👉 Long:", long);
+    console.log("👉 Aadhaar Number:", aadhaar_number);
+    console.log("👉 PID Data length:", piddata ? piddata.length : "EMPTY");
+    console.log("👉 Access Mode:", accessmode);
+    console.log("👉 is_iris:", is_iris);
 
-            url: "https://sit.paysprint.in/service-api/api/v1/service/dmt/kyc/remitter/queryremitter/kyc",
-            requestData: req.body,
-            responseData: response.data
-        });
-        return res.status(200).json({ ...response.data });
-
-    } catch (error) {
-        return next(error)
+    if (!piddata) {
+      console.log("❌ [remitterEkyc] PID Data is missing!");
+      return res.status(400).json({ status: false, message: "PID data is required" });
     }
+
+    const key = crypto.randomBytes(16);
+    const iv = crypto.randomBytes(16);
+    console.log("✅ [remitterEkyc] Generated Key:", key.toString('hex'));
+    console.log("✅ [remitterEkyc] Generated IV:", iv.toString('hex'));
+
+    const encryptedData = encryptPidData(piddata, key, iv);
+    console.log("✅ [remitterEkyc] Encrypted PID Data length:", encryptedData.length);
+
+    const apiPayload = {
+      mobile: Number(mobile),
+      lat,
+      long,
+      aadhaar_number,
+      data: encryptedData,
+      accessmode,
+      is_iris,
+      wadh: "18f4CEiXeXcfGXvgWA/blxD+w2pw7hfQPY45JMytkPw="
+    };
+
+    console.log("✅ [remitterEkyc] Final API Payload:", JSON.stringify(apiPayload, null, 2));
+
+    const response = await axios.post(
+      'https://api.paysprint.in/api/v1/service/dmt/kyc/remitter/queryremitter/kyc',
+      apiPayload,
+      { headers }
+    );
+
+    console.log("✅ [remitterEkyc] Paysprint Response:", JSON.stringify(response.data, null, 2));
+
+    logApiCall({
+      url: "https://api.paysprint.in/api/v1/service/dmt/kyc/remitter/queryremitter/kyc",
+      requestData: req.body,
+      responseData: response.data
+    });
+
+    return res.status(200).json({ ...response.data });
+
+  } catch (error) {
+    console.log("❌ [remitterEkyc] Error:", error?.response?.data || error.message || error);
+    return next(error);
+  }
 };
 
 exports.registerRemitter = async (req, res, next) => {
