@@ -11,13 +11,14 @@ const mongoose = require('mongoose');
 const getDmtOrAepsMeta = require('../../utils/aeps&DmtCommmsion.js');
 const { calculateCommissionFromSlabs, getApplicableServiceCharge, logApiCall } = require('../../utils/chargeCaluate.js');
 const { distributeCommission } = require('../../utils/distributerCommission.js');
-const token = generatePaysprintJWT();
+
+
+exports.queryRemitter = async (req, res, next) => {
+    const token = generatePaysprintJWT();
 const headers = {
   'Token': token,
   'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
 }
-
-exports.queryRemitter = async (req, res, next) => {
     try {
         const { mobile, lat, long } = req.body;
         const response = await axios.post(
@@ -39,6 +40,11 @@ exports.queryRemitter = async (req, res, next) => {
 };
 
 exports.remitterEkyc = async (req, res, next) => {
+    const token = generatePaysprintJWT();
+const headers = {
+  'Token': token,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+}
     try {
         const {
             mobile,
@@ -81,6 +87,11 @@ exports.remitterEkyc = async (req, res, next) => {
 };
 
 exports.registerRemitter = async (req, res, next) => {
+    const token = generatePaysprintJWT();
+const headers = {
+  'Token': token,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+}
     try {
         const { mobile, otp, stateresp, ekyc_id } = req.body;
 
@@ -108,6 +119,11 @@ exports.registerRemitter = async (req, res, next) => {
 };
 
 exports.registerBeneficiary = async (req, res, next) => {
+    const token = generatePaysprintJWT();
+const headers = {
+  'Token': token,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+}
     try {
         const {
             mobile,
@@ -165,6 +181,11 @@ exports.registerBeneficiary = async (req, res, next) => {
 };
 
 exports.deleteBeneficiary = async (req, res, next) => {
+    const token = generatePaysprintJWT();
+const headers = {
+  'Token': token,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+}
     try {
         const { mobile, bene_id } = req.body;
         if (!mobile || !bene_id) {
@@ -191,6 +212,12 @@ exports.deleteBeneficiary = async (req, res, next) => {
 };
 
 exports.fetchBeneficiary = async (req, res, next) => {
+    const token = generatePaysprintJWT();
+const headers = {
+  'Token': token,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+}
+
     try {
         const { mobile } = req.query;
         if (!mobile) {
@@ -214,6 +241,11 @@ exports.fetchBeneficiary = async (req, res, next) => {
 };
 
 exports.BeneficiaryById = async (req, res, next) => {
+    const token = generatePaysprintJWT();
+const headers = {
+  'Token': token,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+}
     try {
         const { mobile, beneid } = req.query;
 
@@ -241,6 +273,11 @@ exports.BeneficiaryById = async (req, res, next) => {
 };
 
 exports.PennyDrop = async (req, res, next) => {
+    const token = generatePaysprintJWT();
+const headers = {
+  'Token': token,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+}
     const session = await mongoose.startSession();
     session.startTransaction();
 
@@ -400,6 +437,11 @@ exports.PennyDrop = async (req, res, next) => {
 
 
 exports.sendTransactionOtp = async (req, res, next) => {
+    const token = generatePaysprintJWT();
+const headers = {
+  'Token': token,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+}
     try {
         const {
             mobile,
@@ -450,6 +492,11 @@ exports.sendTransactionOtp = async (req, res, next) => {
 };
 
 exports.performTransaction = async (req, res, next) => {
+    const token = generatePaysprintJWT();
+const headers = {
+  'Token': token,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+}
     const session = await mongoose.startSession();
     session.startTransaction();
 
@@ -621,6 +668,11 @@ exports.performTransaction = async (req, res, next) => {
 };
 
 exports.TrackTransaction = async (req, res, next) => {
+    const token = generatePaysprintJWT();
+const headers = {
+  'Token': token,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+}
     try {
         const {
             referenceid,
@@ -649,6 +701,11 @@ exports.TrackTransaction = async (req, res, next) => {
 };
 
 exports.RefundOtp = async (req, res, next) => {
+    const token = generatePaysprintJWT();
+const headers = {
+  'Token': token,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+}
     try {
         const {
             referenceid,
@@ -677,6 +734,11 @@ exports.RefundOtp = async (req, res, next) => {
 };
 
 exports.Refund = async (req, res, next) => {
+    const token = generatePaysprintJWT();
+const headers = {
+  'Token': token,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
+}
     try {
         const {
             referenceid,
