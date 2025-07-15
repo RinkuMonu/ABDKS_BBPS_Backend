@@ -11,22 +11,22 @@ const mongoose = require('mongoose');
 const getDmtOrAepsMeta = require('../../utils/aeps&DmtCommmsion.js');
 const { calculateCommissionFromSlabs, getApplicableServiceCharge, logApiCall } = require('../../utils/chargeCaluate.js');
 const { distributeCommission } = require('../../utils/distributerCommission.js');
-
+const token = generatePaysprintJWT();
 const headers = {
-    'Token': generatePaysprintJWT(),
-    'Authorisedkey': 'MGY1MTVmNWM3Yjk5MTdlYTcyYjk5NmUzZjYwZDVjNWE=',
+  'Token': token,
+  'Authorisedkey': 'MjE1OWExZTIwMDFhM2Q3NGNmZGE2MmZkN2EzZWZkODQ=',
 }
 
 exports.queryRemitter = async (req, res, next) => {
     try {
         const { mobile, lat, long } = req.body;
         const response = await axios.post(
-            'https://sit.paysprint.in/service-api/api/v1/service/dmt/kyc/remitter/queryremitter',
+            'https://api.paysprint.in/api/v1/service/dmt/kyc/remitter/queryremitter',
             { mobile: Number(mobile), lat, long },
             { headers }
         );
         logApiCall({
-            url: "https://sit.paysprint.in/service-api/api/v1/service/dmt/kyc/remitter/queryremitter",
+            url: "https://api.paysprint.in/api/v1/service/dmt/kyc/remitter/queryremitter",
             requestData: req.body,
             responseData: response.data
         });
@@ -55,7 +55,7 @@ exports.remitterEkyc = async (req, res, next) => {
         const encryptedData = encryptPidData(`${piddata}`, key, iv);
 
         const response = await axios.post(
-            'https://sit.paysprint.in/service-api/api/v1/service/dmt/kyc/remitter/queryremitter/kyc',
+            'https://api.paysprint.in/api/v1/service/dmt/kyc/remitter/queryremitter/kyc',
             {
                 mobile: Number(mobile),
                 lat,
@@ -85,7 +85,7 @@ exports.registerRemitter = async (req, res, next) => {
         const { mobile, otp, stateresp, ekyc_id } = req.body;
 
         const response = await axios.post(
-            'https://sit.paysprint.in/service-api/api/v1/service/dmt/kyc/remitter/registerremitter',
+            'https://api.paysprint.in/api/v1/service/dmt/kyc/remitter/registerremitter',
             {
                 "mobile": Number(mobile),
                 "otp": otp,
@@ -134,7 +134,7 @@ exports.registerBeneficiary = async (req, res, next) => {
             ...(pincode && { pincode })
         };
         const response = await axios.post(
-            'https://sit.paysprint.in/service-api/api/v1/service/dmt/kyc/beneficiary/registerbeneficiary',
+            'https://api.paysprint.in/api/v1/service/dmt/kyc/beneficiary/registerbeneficiary',
             payload,
             { headers }
         );
@@ -171,7 +171,7 @@ exports.deleteBeneficiary = async (req, res, next) => {
             return res.status(400).json({ error: true, message: "mobile and bene_id are required" });
         }
         const response = await axios.post(
-            'https://sit.paysprint.in/service-api/api/v1/service/dmt/kyc/beneficiary/registerbeneficiary/deletebeneficiary',
+            'https://api.paysprint.in/api/v1/service/dmt/kyc/beneficiary/registerbeneficiary/deletebeneficiary',
             {
                 mobile,
                 bene_id
@@ -197,7 +197,7 @@ exports.fetchBeneficiary = async (req, res, next) => {
             return res.status(400).json({ error: true, message: "mobile is required" });
         }
         const response = await axios.post(
-            'https://sit.paysprint.in/service-api/api/v1/service/dmt/kyc/beneficiary/registerbeneficiary/fetchbeneficiary',
+            'https://api.paysprint.in/api/v1/service/dmt/kyc/beneficiary/registerbeneficiary/fetchbeneficiary',
             { mobile }, { headers }
         );
         logApiCall({
@@ -222,7 +222,7 @@ exports.BeneficiaryById = async (req, res, next) => {
         }
 
         const response = await axios.post(
-            'https://sit.paysprint.in/service-api/api/v1/service/dmt/kyc/beneficiary/registerbeneficiary/fetchbeneficiarybybeneid',
+            'https://api.paysprint.in/api/v1/service/dmt/kyc/beneficiary/registerbeneficiary/fetchbeneficiarybybeneid',
             { mobile, beneid }, { headers }
         );
 
@@ -319,7 +319,7 @@ exports.PennyDrop = async (req, res, next) => {
         };
 
         const { data: result } = await axios.post(
-            'https://sit.paysprint.in/service-api/api/v1/service/dmt/kyc/beneficiary/registerbeneficiary/benenameverify',
+            'https://api.paysprint.in/api/v1/service/dmt/kyc/beneficiary/registerbeneficiary/benenameverify',
             payload,
             { headers }
         );
@@ -434,7 +434,7 @@ exports.sendTransactionOtp = async (req, res, next) => {
         };
 
         const response = await axios.post(
-            'https://sit.paysprint.in/service-api/api/v1/service/dmt/kyc/transact/transact/send_otp',
+            'https://api.paysprint.in/api/v1/service/dmt/kyc/transact/transact/send_otp',
             payload, { headers }
         );
         logApiCall({
@@ -539,7 +539,7 @@ exports.performTransaction = async (req, res, next) => {
         };
 
         const response = await axios.post(
-            'https://sit.paysprint.in/service-api/api/v1/service/dmt/kyc/transact/transact',
+            'https://api.paysprint.in/api/v1/service/dmt/kyc/transact/transact',
             payload,
             { headers }
         );
@@ -633,7 +633,7 @@ exports.TrackTransaction = async (req, res, next) => {
             referenceid,
         };
         const response = await axios.post(
-            'https://sit.paysprint.in/service-api/api/v1/service/dmt/kyc/transact/transact/querytransact',
+            'https://api.paysprint.in/api/v1/service/dmt/kyc/transact/transact/querytransact',
             payload, { headers }
         );
         logApiCall({
@@ -662,7 +662,7 @@ exports.RefundOtp = async (req, res, next) => {
             ackno
         };
         const response = await axios.post(
-            'https://sit.paysprint.in/service-api/api/v1/service/dmt/kyc/refund/refund/resendotp',
+            'https://api.paysprint.in/api/v1/service/dmt/kyc/refund/refund/resendotp',
             payload, { headers }
         );
         logApiCall({
@@ -691,7 +691,7 @@ exports.Refund = async (req, res, next) => {
             ackno, otp
         };
         const response = await axios.post(
-            'https://sit.paysprint.in/service-api/api/v1/service/dmt/kyc/refund/refund',
+            'https://api.paysprint.in/api/v1/service/dmt/kyc/refund/refund',
             payload, { headers }
         );
         logApiCall({
