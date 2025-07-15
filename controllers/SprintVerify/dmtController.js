@@ -51,7 +51,7 @@ const headers = {
             lat,
             long,
             aadhaar_number,
-            data:piddata,
+            piddata,
             accessmode = 'WEB',
             is_iris = 2
         } = req.body;
@@ -69,7 +69,8 @@ const headers = {
                 aadhaar_number,
                 data: encryptedData,
                 accessmode,
-                is_iris
+                is_iris,
+                wadh: "18f4CEiXeXcfGXvgWA/blxD+w2pw7hfQPY45JMytkPw="
             },
             { headers }
         );
