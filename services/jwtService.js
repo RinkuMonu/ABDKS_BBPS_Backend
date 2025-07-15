@@ -1,3 +1,25 @@
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+
+const generateJwtToken = (userId, role, mobileNumber) => {
+  try {
+    const payload = {
+      id: userId,
+      role,
+      mobileNumber
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: '30d',
+    });
+
+    return token;
+  } catch (error) {
+    console.error('Error generating JWT:', error);
+    throw new Error('Failed to generate token');
+  }
+};
+
 function encryptPidData(piddata, key, iv) {
   console.log("✅ [encryptPidData] Original PID Data length:", piddata.length);
   console.log("✅ [encryptPidData] Key Buffer:", key);
@@ -17,3 +39,7 @@ function encryptPidData(piddata, key, iv) {
 
   return encryptedBase64;
 }
+
+
+
+module.exports = { generateJwtToken, encryptPidData };
