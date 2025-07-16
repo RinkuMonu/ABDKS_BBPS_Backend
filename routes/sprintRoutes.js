@@ -72,7 +72,7 @@ router.post(
     "/tripdetails", authenticateToken,
     busController.getTripDetails
 );
-app.get("/get-token", (req, res) => {
+router.get("/get-token", (req, res) => {
   const token = generatePaysprintJWT();
   res.send({ token });
 });
