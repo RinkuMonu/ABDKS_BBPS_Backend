@@ -20,6 +20,7 @@ const generateJwtToken = (userId, role, mobileNumber) => {
   }
 };
 
+
 function encryptPidData(piddata, key, iv) {
   console.log("✅ [encryptPidData] Original PID Data length:", piddata.length);
   console.log("✅ [encryptPidData] Key Buffer:", key);

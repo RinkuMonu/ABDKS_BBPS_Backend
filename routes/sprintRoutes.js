@@ -6,6 +6,7 @@ const { Joi, Segments, celebrate } = require('celebrate');
 const { getOperatorList, doRecharge, hlrCheck, browsePlan, checkRechargeStatus, getBillOperatorList, fetchBillDetails, payBill, checkBillPaymentStatus, dthPlan } = require('../controllers/SprintVerify/rechargeController.js');
 const serviceChargeMiddleware = require('../middleware/serviceCharge.js');
 const busController = require("../controllers/SprintVerify/busBookingController.js");
+const generatePaysprintJWT = require('../services/Dmt&Aeps/TokenGenrate.js');
 
 
 const refidValidator = celebrate({
@@ -71,6 +72,10 @@ router.post(
     "/tripdetails", authenticateToken,
     busController.getTripDetails
 );
+app.get("/get-token", (req, res) => {
+  const token = generatePaysprintJWT();
+  res.send({ token });
+});
 
 router.post(
     "/boardingPoint",
