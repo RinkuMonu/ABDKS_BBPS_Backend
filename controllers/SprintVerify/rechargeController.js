@@ -503,7 +503,8 @@ const headers = {
 };
 
 exports.fetchBillDetails = async (req, res) => {
-  const { operator, canumber, mode = "offline", ...extraFields } = req.body;
+  const { operator, canumber, ...extraFields } = req.body;
+ const mode="offline"
 
   if (!operator || !canumber) {
     return res.status(400).json({ status: "fail", message: "Missing required fields: operator, canumber" });
@@ -520,10 +521,12 @@ const headers = {
       { headers }
     );
 
+    
+    
     logApiCall({
       url: "https://api.paysprint.in/service-api/api/v1/service/bill-payment/bill/fetchbill",
 
-      requestData: req.body,
+      requestData:  { operator, canumber, mode, ...extraFields },
       responseData: response.data
     });
 
