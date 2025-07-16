@@ -524,7 +524,7 @@ const headers = {
     
     
     logApiCall({
-      url: "https://api.paysprint.in/service-api/api/v1/service/bill-payment/bill/fetchbill",
+      url: "https://api.paysprint.in/api/v1/service/bill-payment/bill/fetchbill",
 
       requestData:  { operator, canumber, mode, ...extraFields },
       responseData: response.data
