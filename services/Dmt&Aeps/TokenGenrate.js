@@ -12,7 +12,8 @@ function generatePaysprintJWT() {
     reqid: reqid
   };
 
-  const secret = "UFMwMDYyMjY0ZmJmYjIzYmNiMTliMDJjMmJjZWIxYjA5ZGUzNmJjYjE3NTEwMjI2Mzg="; // ✅ Tumhara live secret
+const secret = Buffer.from("UFMwMDYyMjY0ZmJmYjIzYmNiMTliMDJjMmJjZWIxYjA5ZGUzNmJjYjE3NTEwMjI2Mzg=", 'base64'); // decode
+
 
   const token = jwt.sign(payload, secret, {
     algorithm: "HS256",
@@ -24,5 +25,7 @@ function generatePaysprintJWT() {
   console.log("✅ Payload:", payload);
   return token;
 }
+
+
 
 module.exports = generatePaysprintJWT;
